@@ -2227,6 +2227,37 @@ void controllerFan()
 }
 #endif
 
+
+#ifdef AUTO_FAN_MIN
+void auto_fan()
+{
+  static unsigned long lastTemp = 0; //Save the last time a heater was turned on
+  static unsigned long lastTempCheck = 0;
+
+  if ((millis() - lastTempCheck) >= 10000) //Not a time critical function, so we only check every 10000ms
+  {
+    lastTempCheck = millis();
+    
+    if (degHotend(active_extruder) > MIN_FAN_TEMP)
+    {
+      lastTemp = millis(); //... set time to NOW so the fan will turn on
+    }
+    
+    if ((millis() - lastTemp) >= (MIN_FAN_TIME*1000UL) || lastTemp == 0) // 
+    {
+      fanSpeed=0;  //... turn the fan off
+    }
+    else
+    {
+	  if ((degHotend(active_extruder) > MIN_FAN_TEMP) && (fanSpeed < AUTO_FAN_MIN))
+	  {
+	    fanSpeed=constrain(AUTO_FAN_MIN,0,255);
+	  }
+    }
+  }
+}
+#endif
+
 void manage_inactivity()
 {
   if( (millis() - previous_millis_cmd) >  max_inactive_time )
@@ -2251,6 +2282,9 @@ void manage_inactivity()
   #endif
   #if defined(CONTROLLERFAN_PIN) && CONTROLLERFAN_PIN > -1
     controllerFan(); //Check if fan should be turned on to cool stepper drivers down
+  #endif
+  #ifdef AUTO_FAN_MIN
+    auto_fan(); //Check if fan should be turned on to keep thermal barrier cool
   #endif
   #ifdef EXTRUDER_RUNOUT_PREVENT
     if( (millis() - previous_millis_cmd) >  EXTRUDER_RUNOUT_SECONDS*1000 )

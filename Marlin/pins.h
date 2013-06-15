@@ -932,12 +932,13 @@
 /* On some broken versions of the Sanguino libraries the pin definitions are wrong, which then needs SDSS as pin 24. But you better upgrade your Sanguino libraries! See #368. */
 //#define SDSS               24
 
- #ifdef ULTRA_LCD
-   #ifdef NEWPANEL
+#ifdef ULTRA_LCD
+  #ifdef NEWPANEL
      //we have no buzzer installed
      #define BEEPER -1
+	 
      //LCD Pins
-     #ifdef DOGLCD
+	 #ifdef DOGLCD
        // Pins for DOGM SPI LCD Support
        #define DOGLCD_A0  30
        #define DOGLCD_CS  29
@@ -955,25 +956,43 @@
        #define LCD_PINS_D5        29
        #define LCD_PINS_D6        28
        #define LCD_PINS_D7        27
-     #endif
+     #endif  //DOGLCD
+	 
      //The encoder and click button
      #define BTN_EN1 11  
-     #define BTN_EN2 10 
+     #define BTN_EN2 10	 
      #ifdef LCD_I2C_PANELOLU2
        #ifdef MELZI
          #define BTN_ENC 29 //the click switch
          #define SDSS 30 //to use the SD card reader on the Panelolu2 rather than the melzi board
        #else
          #define BTN_ENC 30 //the click switch
-       #endif
+       #endif  // MELZI
      #else
        #define BTN_ENC 16  //the click switch
      #endif //Panelolu2
+	 
      //not connected to a pin
-     #define SDCARDDETECT -1    
-    
-   #endif //Newpanel
- #endif //Ultipanel
+     #define SDCARDDETECT -1  
+  #endif //newpanel
+
+  #ifdef BASIC_ENCODER
+    #ifdef BTN_EN1 
+	  #undef BTN_EN1
+	#endif
+    #ifdef BTN_EN2 
+	  #undef BTN_EN2
+	#endif
+    #ifdef BTN_ENC
+	  #undef BTN_ENC
+	#endif
+	
+    #define BTN_EN1 29  
+    #define BTN_EN2 30 
+    #define BTN_ENC 27 //the click switch	
+  #endif //basic_encoder
+ 
+ #endif //ulti_lcd
 
 #endif
 

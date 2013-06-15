@@ -57,7 +57,7 @@
 #endif
 
 // Define this to set a custom name for your generic Mendel,
-// #define CUSTOM_MENDEL_NAME "This Mendel"
+#define CUSTOM_MENDEL_NAME "Tantillus"
 
 // This defines the number of extruders
 #define EXTRUDERS 1
@@ -132,8 +132,8 @@
 // 52 is 200k thermistor - ATC Semitec 204GT-2 (1k pullup)
 // 55 is 100k thermistor - ATC Semitec 104GT-2 (Used in ParCan) (1k pullup)
 
-#define TEMP_SENSOR_0 -1
-#define TEMP_SENSOR_1 -1
+#define TEMP_SENSOR_0 1
+#define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_BED 0
 
@@ -402,6 +402,7 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 	#define ULTRA_LCD
 	#define SDSUPPORT
 	#define BASIC_LCD
+	#define BASIC_ENCODER
 #endif //LAJOS
 
 // EEPROM
@@ -490,6 +491,9 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
   #define LCD_WIDTH 16
   #define LCD_HEIGHT 2
 #endif
+
+// encoder connected separately
+//#define BASIC_ENCODER
 
 //#define LCD_I2C_SAINSMART_YWROBOT
 #ifdef LCD_I2C_SAINSMART_YWROBOT

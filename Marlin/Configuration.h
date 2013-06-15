@@ -52,7 +52,7 @@
 // 21 = Elefu Ra Board (v3)
 
 #ifndef MOTHERBOARD
-#define MOTHERBOARD 7
+#define MOTHERBOARD 62
 #endif
 
 // Define this to set a custom name for your generic Mendel,
@@ -383,9 +383,9 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 #define ABS_PREHEAT_FAN_SPEED 255   // Insert Value between 0 and 255
 
 //LCD and SD support
-//#define ULTRA_LCD  //general lcd support, also 16x2
+#define ULTRA_LCD  //general lcd support, also 16x2
 //#define DOGLCD  // Support for SPI LCD 128x64 (Controller ST7565R graphic Display Family)
-//#define SDSUPPORT // Enable SD Card Support in Hardware Console
+#define SDSUPPORT // Enable SD Card Support in Hardware Console
 //#define SDSLOW // Use slower SD transfer mode (not normally needed - uncomment if you're getting volume init error)
 
 //#define ULTIMAKERCONTROLLER //as available from the ultimaker online store.
@@ -439,6 +439,15 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 #endif
 
 //I2C PANELS
+
+#define BASIC_LCD
+#ifdef BASIC_LCD
+  // LCD only, based on the schematics from http://hmario.home.xs4all.nl/arduino/LiquidCrystal_I2C/
+  #define LCD_I2C_TYPE_PCF8575
+  #define LCD_I2C_ADDRESS 0x3f   // I2C Address of the port expander
+  #define LCD_WIDTH 16
+  #define LCD_HEIGHT 2
+#endif
 
 //#define LCD_I2C_SAINSMART_YWROBOT
 #ifdef LCD_I2C_SAINSMART_YWROBOT

@@ -824,6 +824,7 @@ void lcd_init()
     WRITE(SHIFT_LD,HIGH);
   #endif
 #else
+#ifndef BASIC_LCD
     pinMode(SHIFT_CLK,OUTPUT);
     pinMode(SHIFT_LD,OUTPUT);
     pinMode(SHIFT_EN,OUTPUT);
@@ -831,6 +832,7 @@ void lcd_init()
     WRITE(SHIFT_OUT,HIGH);
     WRITE(SHIFT_LD,HIGH); 
     WRITE(SHIFT_EN,LOW);
+#endif //!BASIC_LCD
 #endif//!NEWPANEL
 #if (SDCARDDETECT > 0)
     WRITE(SDCARDDETECT, HIGH);

@@ -9,13 +9,13 @@
 #include "ConfigurationStore.h"
 
 /* Configuration settings */
-int plaPreheatHotendTemp;
-int plaPreheatHPBTemp;
-int plaPreheatFanSpeed;
+int plaPreheatHotendTemp = PLA_PREHEAT_HOTEND_TEMP;
+int plaPreheatHPBTemp = PLA_PREHEAT_HPB_TEMP;
+int plaPreheatFanSpeed = PLA_PREHEAT_FAN_SPEED;
 
-int absPreheatHotendTemp;
-int absPreheatHPBTemp;
-int absPreheatFanSpeed;
+int absPreheatHotendTemp = ABS_PREHEAT_HOTEND_TEMP;
+int absPreheatHPBTemp = ABS_PREHEAT_HPB_TEMP;
+int absPreheatFanSpeed = ABS_PREHEAT_FAN_SPEED;
 /* !Configuration settings */
 
 //Function pointer to menu functions.

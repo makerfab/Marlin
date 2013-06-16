@@ -37,7 +37,7 @@ void copy_and_scalePID_d();
 
 /* Different menus */
 static void lcd_status_screen();
-#ifdef ULTIPANEL
+#if defined(ULTIPANEL) || defined(BASIC_ENCODER)
 static void lcd_main_menu();
 static void lcd_tune_menu();
 static void lcd_prepare_menu();
@@ -164,7 +164,7 @@ static void lcd_status_screen()
         lcd_implementation_status_screen();
         lcd_status_update_delay = 10;   /* redraw the main screen every second. This is easier then trying keep track of all things that change on the screen */
     }
-#ifdef ULTIPANEL
+#if defined(ULTIPANEL) || defined(BASIC_ENCODER)
     if (LCD_CLICKED)
     {
         currentMenu = lcd_main_menu;
@@ -203,7 +203,7 @@ static void lcd_status_screen()
 #endif//ULTIPANEL
 }
 
-#ifdef ULTIPANEL
+#if defined(ULTIPANEL) || defined(BASIC_ENCODER)
 static void lcd_return_to_status()
 {
     encoderPosition = 0;
@@ -506,8 +506,10 @@ static void lcd_control_menu()
 static void lcd_control_temperature_menu()
 {
     // set up temp variables - undo the default scaling
+#ifdef PIDTEMP
     raw_Ki = unscalePID_i(Ki);
     raw_Kd = unscalePID_d(Kd);
+#endif
 
     START_MENU();
     MENU_ITEM(back, MSG_CONTROL, lcd_control_menu);
@@ -834,12 +836,22 @@ void lcd_init()
     WRITE(SHIFT_EN,LOW);
 #endif //!BASIC_LCD
 #endif//!NEWPANEL
+
+#ifdef BASIC_ENCODER
+    pinMode(BTN_EN1,INPUT);
+    pinMode(BTN_EN2,INPUT); 
+    WRITE(BTN_EN1,HIGH);
+    WRITE(BTN_EN2,HIGH);
+    pinMode(BTN_ENC,INPUT); 
+    WRITE(BTN_ENC,HIGH);
+#endif
+
 #if (SDCARDDETECT > 0)
     WRITE(SDCARDDETECT, HIGH);
     lcd_oldcardstatus = IS_SD_INSERTED;
 #endif//(SDCARDDETECT > 0)
     lcd_buttons_update();
-#ifdef ULTIPANEL    
+#if defined(ULTIPANEL) || defined(BASIC_ENCODER) 
     encoderDiff = 0;
 #endif    
 }
@@ -876,7 +888,7 @@ void lcd_update()
     
     if (lcd_next_update_millis < millis())
     {
-#ifdef ULTIPANEL
+#if defined(ULTIPANEL) || defined(BASIC_ENCODER)
         #ifdef REPRAPWORLD_KEYPAD
         if (REPRAPWORLD_KEYPAD_MOVE_Y_DOWN) {
             reprapworld_keypad_move_y_down();
@@ -920,7 +932,7 @@ void lcd_update()
         lcd_implementation_update_indicators();
 #endif
 
-#ifdef ULTIPANEL
+#if defined(ULTIPANEL) || defined(BASIC_ENCODER)
         if(timeoutToStatus < millis() && currentMenu != lcd_status_screen)
         {
             lcd_return_to_status();
@@ -953,7 +965,7 @@ void lcd_setalertstatuspgm(const char* message)
 {
     lcd_setstatuspgm(message);
     lcd_status_message_level = 1;
-#ifdef ULTIPANEL
+#if defined(ULTIPANEL) || defined(BASIC_ENCODER)
     lcd_return_to_status();
 #endif//ULTIPANEL
 }
@@ -962,7 +974,7 @@ void lcd_reset_alert_level()
     lcd_status_message_level = 0;
 }
 
-#ifdef ULTIPANEL
+#if defined(ULTIPANEL) || defined(BASIC_ENCODER)
 /* Warning: This function is called from interrupt context */
 void lcd_buttons_update()
 {
@@ -990,6 +1002,7 @@ void lcd_buttons_update()
   #endif
     buttons = newbutton;
 #else   //read it from the shift register
+  #ifndef BASIC_LCD
     uint8_t newbutton=0;
     WRITE(SHIFT_LD,LOW);
     WRITE(SHIFT_LD,HIGH);
@@ -1003,7 +1016,17 @@ void lcd_buttons_update()
         WRITE(SHIFT_CLK,LOW);
     }
     buttons=~newbutton; //invert it, because a pressed switch produces a logical 0
+  #endif
 #endif//!NEWPANEL
+
+#ifdef BASIC_ENCODER
+    uint8_t newbutton=0;
+    if(READ(BTN_EN1)==0)  newbutton|=EN_A;
+    if(READ(BTN_EN2)==0)  newbutton|=EN_B;
+    if((blocking_enc<millis()) && (READ(BTN_ENC)==0))
+        newbutton |= EN_C;
+	buttons = newbutton;
+#endif
 
     //manage encoder rotation
     uint8_t enc=0;

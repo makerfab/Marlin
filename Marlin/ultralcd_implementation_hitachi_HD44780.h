@@ -19,7 +19,7 @@ extern volatile uint16_t buttons;  //an extended version of the last checked but
 // macro name. The mapping is independent of whether the button is directly connected or 
 // via a shift/i2c register.
 
-#ifdef ULTIPANEL
+#if defined(ULTIPANEL) || defined(BASIC_ENCODER)
 // All Ultipanels might have an encoder - so this is always be mapped onto first two bits
 #define BLEN_B 1
 #define BLEN_A 0

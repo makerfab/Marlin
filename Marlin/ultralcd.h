@@ -20,7 +20,7 @@
   #define LCD_UPDATE_INTERVAL 100
   #define LCD_TIMEOUT_TO_STATUS 15000
 
-  #ifdef ULTIPANEL
+  #if defined(ULTIPANEL) || defined(BASIC_ENCODER)
   void lcd_buttons_update();
   #else
   FORCE_INLINE void lcd_buttons_update() {}

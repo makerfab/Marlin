@@ -75,6 +75,7 @@ static void menu_action_setting_edit_callback_float5(const char* pstr, float* pt
 static void menu_action_setting_edit_callback_float51(const char* pstr, float* ptr, float minValue, float maxValue, menuFunc_t callbackFunc);
 static void menu_action_setting_edit_callback_float52(const char* pstr, float* ptr, float minValue, float maxValue, menuFunc_t callbackFunc);
 static void menu_action_setting_edit_callback_long5(const char* pstr, unsigned long* ptr, unsigned long minValue, unsigned long maxValue, menuFunc_t callbackFunc);
+static void menu_action_auto_home();
 
 #define ENCODER_FEEDRATE_DEADZONE 10
 
@@ -346,7 +347,7 @@ static void lcd_prepare_menu()
     //MENU_ITEM(function, MSG_AUTOSTART, lcd_autostart_sd);
 #endif
     MENU_ITEM(gcode, MSG_DISABLE_STEPPERS, PSTR("M84"));
-    MENU_ITEM(gcode, MSG_AUTO_HOME, PSTR("G28"));
+    MENU_ITEM(function, MSG_AUTO_HOME, menu_action_auto_home);
     //MENU_ITEM(gcode, MSG_SET_ORIGIN, PSTR("G92 X0 Y0 Z0"));
 #if !defined(NO_PREHEAT_PLA_MENUITEM)	
     MENU_ITEM(function, MSG_PREHEAT_PLA, lcd_preheat_pla);
@@ -770,6 +771,15 @@ menu_edit_type(unsigned long, long5, ftostr5, 0.01)
 #endif
 
 /** End of menus **/
+
+
+static void menu_action_auto_home()
+{
+#ifdef TANTILLUS
+	enquecommand_P((PSTR("G1 F6000 X0 Y0")));
+#endif
+	enquecommand_P((PSTR("G28")));
+}
 
 static void lcd_quick_feedback()
 {

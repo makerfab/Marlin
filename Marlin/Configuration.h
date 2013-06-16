@@ -371,18 +371,22 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 	// that section has settings specific to my printer, and you most likely don't want those
 	//
 	
-	#define AUTO_FAN_MIN 160      // Minimum speed to keep the fan at (value 0 - 255) (comment out if not in use)
-	#define MIN_FAN_TEMP 50       // Temperature to turn the fan on at
-	#define MIN_FAN_TIME 45       // Time in seconds to keep the fan on after temperature drops below MIN_FAN_TEMP	
+	#define AUTO_FAN_MIN 160            // Minimum speed to keep the fan at (value 0 - 255) (comment out if not in use)
+	#define MIN_FAN_TEMP 50             // Temperature to turn the fan on at
+	#define MIN_FAN_TIME 45             // Time in seconds to keep the fan on after temperature drops below MIN_FAN_TEMP	
+	
+//	#define NO_PREHEAT_PLA_MENUITEM     // removes PLA pre-heat option from LCD menu
+	#define NO_PREHEAT_ABS_MENUITEM     // removes ABS pre-heat option from LCD menu
+
 	
 #endif //TANTILLUS
 
 // overrides for my Tantillus, this should be disabled
 #define LAJOS
 #ifdef LAJOS
-	#define Z_MAX_POS 120
+	#define Z_MAX_POS 120			// cable Z, without getting too close to my electronics
 	
-	#define DEFAULT_AXIS_STEPS_PER_UNIT   {247,247,205,455}
+	#define DEFAULT_AXIS_STEPS_PER_UNIT   {247,247,205,455}				// 1/32 microstep for x,y,z, and probably a bit thicker fishing line
 	#define DEFAULT_MAX_FEEDRATE          {150, 150, 150, 40}
 	#define DEFAULT_MAX_ACCELERATION      {8000,8000,4000,10000}
 
@@ -390,7 +394,7 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 	
 	#define DEFAULT_ZJERK                 10.0
 
-	#define INVERT_E0_DIR true
+	#define INVERT_E0_DIR true            // my extruder goes backwards
 	
 	#define ULTRA_LCD
 	#define SDSUPPORT

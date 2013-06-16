@@ -378,8 +378,13 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 //	#define NO_PREHEAT_PLA_MENUITEM     // removes PLA pre-heat option from LCD menu
 	#define NO_PREHEAT_ABS_MENUITEM     // removes ABS pre-heat option from LCD menu
 
-	#define EASY_LOAD					// Add load/unload to LCD control panel ***caution*** Allows long extrusion distances
+	#define LCD_EASY_LOAD				// Add load/unload to LCD control panel ***caution*** Allows long extrusion distances
 	#define BOWDEN_LENGTH 650			// Sets max extrusion length ***caution*** Allows long extrusion distances	
+	
+	#define LCD_PURGE_RETRACT			// Adds purge/retract menu items
+	#define LCD_PURGE_LENGTH 5			// How much filament to purge from menu (mm)
+	#define LCD_RETRACT_LENGTH 5		// How much filament to retract (mm)
+	
 	
 #endif //TANTILLUS
 

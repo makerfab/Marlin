@@ -315,6 +315,26 @@ static void lcd_cooldown()
     lcd_return_to_status();
 }
 
+#if defined(LCD_PURGE_RETRACT)
+#define LCD_PURGE_GCODE "G1 F900 E" STRINGIFY(LCD_PURGE_LENGTH)
+#define LCD_RETRACT_GCODE "G1 F900 E-" STRINGIFY(LCD_RETRACT_LENGTH)
+static void lcd_purge()
+{
+	bool extruder_relative_save = axis_relative_modes[3]; 
+	axis_relative_modes[3] = true;
+	enquecommand_P((PSTR(LCD_PURGE_GCODE)));
+	axis_relative_modes[3] = extruder_relative_save;
+}
+
+static void lcd_retract()
+{
+	bool extruder_relative_save = axis_relative_modes[3]; 
+	axis_relative_modes[3] = true;
+	enquecommand_P((PSTR(LCD_RETRACT_GCODE)));
+	axis_relative_modes[3] = extruder_relative_save;
+}
+#endif // LCD_PURGE_RETRACT
+
 static void lcd_auto_home()
 {
 #ifdef TANTILLUS
@@ -323,14 +343,31 @@ static void lcd_auto_home()
 	enquecommand_P((PSTR("G28")));
 }
 
-#if defined(EASY_LOAD)
+#if defined(LCD_EASY_LOAD)
 #define EASY_LOAD_GCODE "G1 F900 E" STRINGIFY(BOWDEN_LENGTH)
 #define EASY_UNLOAD_GCODE "G1 F900 E-" STRINGIFY(BOWDEN_LENGTH)
+
+static void lcd_easy_load()
+{
+	bool extruder_relative_save = axis_relative_modes[3]; 
+	axis_relative_modes[3] = true;
+	enquecommand_P((PSTR(EASY_LOAD_GCODE)));
+	axis_relative_modes[3] = extruder_relative_save;
+}
+
+static void lcd_easy_unload()
+{
+	bool extruder_relative_save = axis_relative_modes[3]; 
+	axis_relative_modes[3] = true;
+	enquecommand_P((PSTR(EASY_UNLOAD_GCODE)));
+	axis_relative_modes[3] = extruder_relative_save;
+}
+
 static void lcd_easy_load_menu()
 {
 	START_MENU();
 	MENU_ITEM(back, MSG_PREPARE, lcd_prepare_menu);
-	MENU_ITEM(gcode, MSG_E_BOWDEN_LENGTH, PSTR(EASY_LOAD_GCODE));
+	MENU_ITEM(function, MSG_E_BOWDEN_LENGTH, lcd_easy_load);
 	END_MENU();
 }
 
@@ -338,10 +375,10 @@ static void lcd_easy_unload_menu()
 {
 	START_MENU();
 	MENU_ITEM(back, MSG_PREPARE, lcd_prepare_menu);
-	MENU_ITEM(gcode, MSG_R_BOWDEN_LENGTH, PSTR(EASY_UNLOAD_GCODE));
+	MENU_ITEM(function, MSG_R_BOWDEN_LENGTH, lcd_easy_unload);
 	END_MENU();
 }
-#endif // EASY_LOAD
+#endif // LCD_EASY_LOAD
 
 static void lcd_tune_menu()
 {
@@ -382,12 +419,14 @@ static void lcd_prepare_menu()
 #if !defined(NO_PREHEAT_ABS_MENUITEM)
     MENU_ITEM(function, MSG_PREHEAT_ABS, lcd_preheat_abs);
 #endif
-#if defined(EASY_LOAD)
+#if defined(LCD_EASY_LOAD)
 	MENU_ITEM(submenu, MSG_EASY_LOAD, lcd_easy_load_menu);
 	MENU_ITEM(submenu, MSG_EASY_UNLOAD, lcd_easy_unload_menu);
 #endif
-	MENU_ITEM(gcode, MSG_PURGE_5, PSTR("G1 F900 E5"));
-	MENU_ITEM(gcode, MSG_RETRACT_5, PSTR("G1 F900 E-5"));
+#if defined(LCD_PURGE_RETRACT)
+	MENU_ITEM(function, MSG_PURGE_XMM, lcd_purge);
+	MENU_ITEM(function, MSG_RETRACT_XMM, lcd_retract);
+#endif
     MENU_ITEM(function, MSG_COOLDOWN, lcd_cooldown);
     MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_menu);
     END_MENU();

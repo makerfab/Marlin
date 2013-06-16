@@ -378,6 +378,8 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 //	#define NO_PREHEAT_PLA_MENUITEM     // removes PLA pre-heat option from LCD menu
 	#define NO_PREHEAT_ABS_MENUITEM     // removes ABS pre-heat option from LCD menu
 
+	#define EASY_LOAD					// Add load/unload to LCD control panel ***caution*** Allows long extrusion distances
+	#define BOWDEN_LENGTH 650			// Sets max extrusion length ***caution*** Allows long extrusion distances	
 	
 #endif //TANTILLUS
 
@@ -414,7 +416,7 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 //#define EEPROM_CHITCHAT
 
 // Preheat Constants
-#define PLA_PREHEAT_HOTEND_TEMP 180 
+#define PLA_PREHEAT_HOTEND_TEMP 190 
 #define PLA_PREHEAT_HPB_TEMP 70
 #define PLA_PREHEAT_FAN_SPEED 255   // Insert Value between 0 and 255
 

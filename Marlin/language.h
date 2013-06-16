@@ -47,6 +47,14 @@
 #if LANGUAGE_CHOICE == 1
 
 // LCD Menu Messages
+
+	#define MSG_PURGE_5 "Purge 5mm"
+	#define MSG_RETRACT_5 "Retract 5mm"
+	#define MSG_EASY_LOAD "Load Filament"
+	#define MSG_EASY_UNLOAD "Unload Filament"
+	#define MSG_E_BOWDEN_LENGTH "Extrude " STRINGIFY(BOWDEN_LENGTH) "mm's"
+	#define MSG_R_BOWDEN_LENGTH "Retract " STRINGIFY(BOWDEN_LENGTH) "mm's"	
+
 	#define WELCOME_MSG MACHINE_NAME " Ready."
 	#define MSG_SD_INSERTED "Card inserted"
 	#define MSG_SD_REMOVED "Card removed"

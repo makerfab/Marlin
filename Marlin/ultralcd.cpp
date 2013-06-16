@@ -75,7 +75,6 @@ static void menu_action_setting_edit_callback_float5(const char* pstr, float* pt
 static void menu_action_setting_edit_callback_float51(const char* pstr, float* ptr, float minValue, float maxValue, menuFunc_t callbackFunc);
 static void menu_action_setting_edit_callback_float52(const char* pstr, float* ptr, float minValue, float maxValue, menuFunc_t callbackFunc);
 static void menu_action_setting_edit_callback_long5(const char* pstr, unsigned long* ptr, unsigned long minValue, unsigned long maxValue, menuFunc_t callbackFunc);
-static void menu_action_auto_home();
 
 #define ENCODER_FEEDRATE_DEADZONE 10
 
@@ -316,6 +315,34 @@ static void lcd_cooldown()
     lcd_return_to_status();
 }
 
+static void lcd_auto_home()
+{
+#ifdef TANTILLUS
+	enquecommand_P((PSTR("G1 F6000 X0 Y0")));
+#endif
+	enquecommand_P((PSTR("G28")));
+}
+
+#if defined(EASY_LOAD)
+#define EASY_LOAD_GCODE "G1 F900 E" STRINGIFY(BOWDEN_LENGTH)
+#define EASY_UNLOAD_GCODE "G1 F900 E-" STRINGIFY(BOWDEN_LENGTH)
+static void lcd_easy_load_menu()
+{
+	START_MENU();
+	MENU_ITEM(back, MSG_PREPARE, lcd_prepare_menu);
+	MENU_ITEM(gcode, MSG_E_BOWDEN_LENGTH, PSTR(EASY_LOAD_GCODE));
+	END_MENU();
+}
+
+static void lcd_easy_unload_menu()
+{
+	START_MENU();
+	MENU_ITEM(back, MSG_PREPARE, lcd_prepare_menu);
+	MENU_ITEM(gcode, MSG_R_BOWDEN_LENGTH, PSTR(EASY_UNLOAD_GCODE));
+	END_MENU();
+}
+#endif // EASY_LOAD
+
 static void lcd_tune_menu()
 {
     START_MENU();
@@ -347,7 +374,7 @@ static void lcd_prepare_menu()
     //MENU_ITEM(function, MSG_AUTOSTART, lcd_autostart_sd);
 #endif
     MENU_ITEM(gcode, MSG_DISABLE_STEPPERS, PSTR("M84"));
-    MENU_ITEM(function, MSG_AUTO_HOME, menu_action_auto_home);
+    MENU_ITEM(function, MSG_AUTO_HOME, lcd_auto_home);
     //MENU_ITEM(gcode, MSG_SET_ORIGIN, PSTR("G92 X0 Y0 Z0"));
 #if !defined(NO_PREHEAT_PLA_MENUITEM)	
     MENU_ITEM(function, MSG_PREHEAT_PLA, lcd_preheat_pla);
@@ -355,6 +382,12 @@ static void lcd_prepare_menu()
 #if !defined(NO_PREHEAT_ABS_MENUITEM)
     MENU_ITEM(function, MSG_PREHEAT_ABS, lcd_preheat_abs);
 #endif
+#if defined(EASY_LOAD)
+	MENU_ITEM(submenu, MSG_EASY_LOAD, lcd_easy_load_menu);
+	MENU_ITEM(submenu, MSG_EASY_UNLOAD, lcd_easy_unload_menu);
+#endif
+	MENU_ITEM(gcode, MSG_PURGE_5, PSTR("G1 F900 E5"));
+	MENU_ITEM(gcode, MSG_RETRACT_5, PSTR("G1 F900 E-5"));
     MENU_ITEM(function, MSG_COOLDOWN, lcd_cooldown);
     MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_menu);
     END_MENU();
@@ -771,15 +804,6 @@ menu_edit_type(unsigned long, long5, ftostr5, 0.01)
 #endif
 
 /** End of menus **/
-
-
-static void menu_action_auto_home()
-{
-#ifdef TANTILLUS
-	enquecommand_P((PSTR("G1 F6000 X0 Y0")));
-#endif
-	enquecommand_P((PSTR("G28")));
-}
 
 static void lcd_quick_feedback()
 {

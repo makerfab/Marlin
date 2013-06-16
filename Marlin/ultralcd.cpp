@@ -212,15 +212,20 @@ static void lcd_return_to_status()
 
 static void lcd_sdcard_pause()
 {
+#ifdef SDSUPPORT
     card.pauseSDPrint();
+#endif
 }
 static void lcd_sdcard_resume()
 {
+#ifdef SDSUPPORT
     card.startFileprint();
+#endif
 }
 
 static void lcd_sdcard_stop()
 {
+#ifdef SDSUPPORT
     card.sdprinting = false;
     card.closefile();
     quickStop();
@@ -229,6 +234,7 @@ static void lcd_sdcard_stop()
         enquecommand_P(PSTR(SD_FINISHED_RELEASECOMMAND));
     }
     autotempShutdown();
+#endif
 }
 
 /* Menu implementation */
@@ -621,18 +627,23 @@ static void lcd_control_retract_menu()
 #if SDCARDDETECT == -1
 static void lcd_sd_refresh()
 {
+#ifdef SDSUPPORT
     card.initsd();
     currentMenuViewOffset = 0;
+#endif
 }
 #endif
 static void lcd_sd_updir()
 {
+#ifdef SDSUPPORT
     card.updir();
     currentMenuViewOffset = 0;
+#endif
 }
 
 void lcd_sdcard_menu()
 {
+#ifdef SDSUPPORT
     uint16_t fileCnt = card.getnrfilenames();
     START_MENU();
     MENU_ITEM(back, MSG_MAIN, lcd_main_menu);
@@ -662,6 +673,7 @@ void lcd_sdcard_menu()
         }
     }
     END_MENU();
+#endif
 }
 
 #define menu_edit_type(_type, _name, _strFunc, scale) \
@@ -794,8 +806,10 @@ static void menu_action_sdfile(const char* filename, char* longFilename)
 }
 static void menu_action_sddirectory(const char* filename, char* longFilename)
 {
+#ifdef SDSUPPORT
     card.chdir(filename);
     encoderPosition = 0;
+#endif
 }
 static void menu_action_setting_edit_bool(const char* pstr, bool* ptr)
 {

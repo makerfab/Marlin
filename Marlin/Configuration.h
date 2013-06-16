@@ -53,7 +53,7 @@
 // 21 = Elefu Ra Board (v3)
 
 #ifndef MOTHERBOARD
-#define MOTHERBOARD 62
+#define MOTHERBOARD 65
 #endif
 
 // Define this to set a custom name for your generic Mendel,
@@ -380,23 +380,16 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 // overrides for my Tantillus, this should be disabled
 #define LAJOS
 #ifdef LAJOS
-	#undef Z_MAX_POS 100
 	#define Z_MAX_POS 120
 	
-	#undef DEFAULT_AXIS_STEPS_PER_UNIT
-	#undef DEFAULT_MAX_FEEDRATE
-	#undef DEFAULT_MAX_ACCELERATION
 	#define DEFAULT_AXIS_STEPS_PER_UNIT   {247,247,205,455}
 	#define DEFAULT_MAX_FEEDRATE          {150, 150, 150, 40}
 	#define DEFAULT_MAX_ACCELERATION      {8000,8000,4000,10000}
 
-	#undef DEFAULT_ACCELERATION
 	#define DEFAULT_ACCELERATION          5000
 	
-	#undef DEFAULT_ZJERK
 	#define DEFAULT_ZJERK                 10.0
 
-	#undef INVERT_E0_DIR
 	#define INVERT_E0_DIR true
 	
 	#define ULTRA_LCD
@@ -535,7 +528,7 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 #endif
 
 #ifdef ULTIPANEL
-//  #define NEWPANEL  //enable this if you have a click-encoder panel
+  #define NEWPANEL  //enable this if you have a click-encoder panel
   #define SDSUPPORT
   #define ULTRA_LCD
   #ifdef DOGLCD // Change number of lines to match the DOG graphic display
@@ -563,13 +556,13 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 // Use software PWM to drive the fan, as for the heaters. This uses a very low frequency
 // which is not ass annoying as with the hardware PWM. On the other hand, if this frequency
 // is too low, you should also increment SOFT_PWM_SCALE.
-//#define FAN_SOFT_PWM
+#define FAN_SOFT_PWM
 
 // Incrementing this by 1 will double the software PWM frequency,
 // affecting heaters, and the fan if FAN_SOFT_PWM is enabled.
 // However, control resolution will be halved for each increment;
 // at zero value, there are 128 effective control positions.
-#define SOFT_PWM_SCALE 0
+#define SOFT_PWM_SCALE 1
 
 // M240  Triggers a camera by emulating a Canon RC-1 Remote
 // Data from: http://www.doc-diy.net/photo/rc-1_hacked/

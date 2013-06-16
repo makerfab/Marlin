@@ -895,6 +895,7 @@
 
 #ifdef AZTEEG_X1
 #define FAN_PIN            4
+#define DISABLE_SPI_SS_HIGH		// disable the sd2card library messing with the fan (fan is on SS port, part of SPI interface)
 #endif
 
 #define PS_ON_PIN          -1

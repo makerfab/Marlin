@@ -182,10 +182,15 @@
   #define PID_dT ((16.0 * 8.0)/(F_CPU / 64.0 / 256.0)) //sampling period of the temperature routine
 
 // If you are using a preconfigured hotend then you can use one of the value sets by uncommenting it
+// J-Head
+    #define  DEFAULT_Kp 30.55
+    #define  DEFAULT_Ki 2.38
+    #define  DEFAULT_Kd 98.12
+
 // Ultimaker
-    #define  DEFAULT_Kp 22.2
-    #define  DEFAULT_Ki 1.08
-    #define  DEFAULT_Kd 114
+//    #define  DEFAULT_Kp 22.2
+//    #define  DEFAULT_Ki 1.08
+//    #define  DEFAULT_Kd 114
 
 // Makergear
 //    #define  DEFAULT_Kp 7.0
@@ -402,6 +407,15 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 	#define DEFAULT_ZJERK                 10.0
 
 	#define INVERT_E0_DIR true            // my extruder goes backwards
+	
+	#define PIDTEMP
+	#define PID_FUNCTIONAL_RANGE 10
+	#define PID_INTEGRAL_DRIVE_MAX 255
+	#define K1 0.95
+	#define PID_dT ((16.0 * 8.0)/(F_CPU / 64.0 / 256.0))
+    #define  DEFAULT_Kp 30.55
+    #define  DEFAULT_Ki 2.38
+    #define  DEFAULT_Kd 98.12
 	
 	#define ULTRA_LCD
 	#define SDSUPPORT

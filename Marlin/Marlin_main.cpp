@@ -159,6 +159,7 @@
 CardReader card;
 #endif
 float homing_feedrate[] = HOMING_FEEDRATE;
+bool relative_mode = false;  //Determines Absolute or Relative Coordinates
 bool axis_relative_modes[] = AXIS_RELATIVE_MODES;
 int feedmultiply=100; //100->1 200->2
 int saved_feedmultiply;
@@ -205,8 +206,6 @@ static float offset[3] = {0.0, 0.0, 0.0};
 static bool home_all_axis = true;
 static float feedrate = 1500.0, next_feedrate, saved_feedrate;
 static long gcode_N, gcode_LastN, Stopped_gcode_LastN = 0;
-
-static bool relative_mode = false;  //Determines Absolute or Relative Coordinates
 
 static char cmdbuffer[BUFSIZE][MAX_CMD_SIZE];
 static bool fromsd[BUFSIZE];
@@ -2260,7 +2259,7 @@ void auto_fan()
       lastTemp = millis(); //... set time to NOW so the fan will turn on
     }
     
-    if ((millis() - lastTemp) >= (MIN_FAN_TIME*1000UL) || lastTemp == 0) // 
+    if (((millis() - lastTemp) >= (MIN_FAN_TIME*1000UL) || lastTemp == 0) && !isHeatingHotend(active_extruder))
     {
       fanSpeed=0;  //... turn the fan off
     }

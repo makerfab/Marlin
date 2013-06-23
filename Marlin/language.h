@@ -54,7 +54,9 @@
 	#define MSG_EASY_LOAD "Load Filament"
 	#define MSG_EASY_UNLOAD "Unload Filament"
 	#define MSG_E_BOWDEN_LENGTH "Extrude " STRINGIFY(BOWDEN_LENGTH) "mm"
-	#define MSG_R_BOWDEN_LENGTH "Retract " STRINGIFY(BOWDEN_LENGTH) "mm"	
+	#define MSG_R_BOWDEN_LENGTH "Retract " STRINGIFY(BOWDEN_LENGTH) "mm"
+	#define MSG_MOVE_BED_DOWN "Lower bed " STRINGIFY(LCD_MOVE_BED_DOWN_DIST) "mm"
+	#define MSG_AUTO_HOME_DISABLED "Home Disabled"
 #endif
 
 	#define WELCOME_MSG MACHINE_NAME " Ready."

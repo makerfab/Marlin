@@ -135,6 +135,10 @@ bool lcd_oldcardstatus;
 #endif
 #endif//ULTIPANEL
 
+#if defined(TANTILLUS)
+#define MOVE_HOME_GCODE "G1 F" STRINGIFY(MOVE_HOME_FEEDRATE) " X0 Y0"
+#endif
+
 menuFunc_t currentMenu = lcd_status_screen; /* function pointer to the currently active menu */
 uint32_t lcd_next_update_millis;
 uint8_t lcd_status_update_delay;
@@ -233,9 +237,29 @@ static void lcd_sdcard_stop()
     {
         enquecommand_P(PSTR(SD_FINISHED_RELEASECOMMAND));
     }
+#if defined(TANTILLUS)
+	enquecommand_P(PSTR(MOVE_HOME_GCODE));
+#endif
     autotempShutdown();
 #endif
 }
+
+#if defined(LCD_MOVE_BED_DOWN)
+#define MOVE_BED_DOWN_GCODE "G1 F" STRINGIFY(LCD_MOVE_BED_DOWN_FEEDRATE) " Z" STRINGIFY(LCD_MOVE_BED_DOWN_DIST)
+static void lcd_move_bed_down()
+{
+	bool relative_mode_save = relative_mode;
+	if (!relative_mode_save)
+	{
+		enquecommand_P(PSTR("G91"));
+	}
+	enquecommand_P(PSTR(MOVE_BED_DOWN_GCODE));
+	if (!relative_mode_save)
+	{
+		enquecommand_P(PSTR("G90"));
+	}	
+}
+#endif
 
 /* Menu implementation */
 static void lcd_main_menu()
@@ -271,6 +295,9 @@ static void lcd_main_menu()
         MENU_ITEM(gcode, MSG_INIT_SDCARD, PSTR("M21")); // Manually initialize the SD-card via user interface
 #endif
     }
+#endif
+#if defined(LCD_MOVE_BED_DOWN)
+	MENU_ITEM(function, MSG_MOVE_BED_DOWN, lcd_move_bed_down);
 #endif
     END_MENU();
 }
@@ -316,51 +343,82 @@ static void lcd_cooldown()
 }
 
 #if defined(LCD_PURGE_RETRACT)
-#define LCD_PURGE_GCODE "G1 F900 E" STRINGIFY(LCD_PURGE_LENGTH)
-#define LCD_RETRACT_GCODE "G1 F900 E-" STRINGIFY(LCD_RETRACT_LENGTH)
+#define LCD_PURGE_GCODE "G1 F" STRINGIFY(LCD_PURGE_FEEDRATE) " E" STRINGIFY(LCD_PURGE_LENGTH)
+#define LCD_RETRACT_GCODE "G1 F" STRINGIFY(LCD_RETRACT_FEEDRATE) " E-" STRINGIFY(LCD_RETRACT_LENGTH)
 static void lcd_purge()
 {
 	bool extruder_relative_save = axis_relative_modes[3]; 
-	axis_relative_modes[3] = true;
+	if (!extruder_relative_save)
+	{
+		enquecommand_P((PSTR("M83")));
+	}
 	enquecommand_P((PSTR(LCD_PURGE_GCODE)));
-	axis_relative_modes[3] = extruder_relative_save;
+	if (!extruder_relative_save)
+	{
+		enquecommand_P((PSTR("M82")));
+	}
 }
 
 static void lcd_retract()
 {
 	bool extruder_relative_save = axis_relative_modes[3]; 
-	axis_relative_modes[3] = true;
+	if (!extruder_relative_save)
+	{
+		enquecommand_P((PSTR("M83")));
+	}
 	enquecommand_P((PSTR(LCD_RETRACT_GCODE)));
-	axis_relative_modes[3] = extruder_relative_save;
+	if (!extruder_relative_save)
+	{
+		enquecommand_P((PSTR("M82")));
+	}
 }
 #endif // LCD_PURGE_RETRACT
 
 static void lcd_auto_home()
 {
+#if defined(LCD_PREVENT_DANGEROUS_HOME)
+	if (degHotend(active_extruder) < LCD_MIN_HOME_TEMP) {
+		lcd_return_to_status();
+		return;
+	}
+#endif
 #ifdef TANTILLUS
-	enquecommand_P((PSTR("G1 F6000 X0 Y0")));
+//		enquecommand_P(PSTR(MOVE_HOME_GCODE));
 #endif
 	enquecommand_P((PSTR("G28")));
+	lcd_return_to_status();
 }
 
 #if defined(LCD_EASY_LOAD)
-#define EASY_LOAD_GCODE "G1 F900 E" STRINGIFY(BOWDEN_LENGTH)
-#define EASY_UNLOAD_GCODE "G1 F900 E-" STRINGIFY(BOWDEN_LENGTH)
+#define EASY_LOAD_GCODE "G1 F" STRINGIFY(EASY_LOAD_FEEDRATE) " E" STRINGIFY(BOWDEN_LENGTH)
+#define EASY_UNLOAD_GCODE "G1 F" STRINGIFY(EASY_UNLOAD_FEEDRATE) " E-" STRINGIFY(BOWDEN_LENGTH)
 
 static void lcd_easy_load()
 {
 	bool extruder_relative_save = axis_relative_modes[3]; 
-	axis_relative_modes[3] = true;
+	if (!extruder_relative_save)
+	{
+		enquecommand_P((PSTR("M83")));
+	}
 	enquecommand_P((PSTR(EASY_LOAD_GCODE)));
-	axis_relative_modes[3] = extruder_relative_save;
+	if (!extruder_relative_save)
+	{
+		enquecommand_P((PSTR("M82")));
+	}
 }
 
 static void lcd_easy_unload()
 {
 	bool extruder_relative_save = axis_relative_modes[3]; 
-	axis_relative_modes[3] = true;
+	if (!extruder_relative_save)
+	{
+		enquecommand_P((PSTR("M83")));
+	}
 	enquecommand_P((PSTR(EASY_UNLOAD_GCODE)));
-	axis_relative_modes[3] = extruder_relative_save;
+	if (!extruder_relative_save)
+	{
+		enquecommand_P((PSTR("M82")));
+	}
 }
 
 static void lcd_easy_load_menu()
@@ -411,8 +469,15 @@ static void lcd_prepare_menu()
     //MENU_ITEM(function, MSG_AUTOSTART, lcd_autostart_sd);
 #endif
     MENU_ITEM(gcode, MSG_DISABLE_STEPPERS, PSTR("M84"));
+#if defined(LCD_PREVENT_DANGEROUS_HOME)
+	if (degHotend(active_extruder) < LCD_MIN_HOME_TEMP) {
+		MENU_ITEM(function, MSG_AUTO_HOME_DISABLED, lcd_auto_home);
+	} else {
+		MENU_ITEM(function, MSG_AUTO_HOME, lcd_auto_home);
+	}
+#else
     MENU_ITEM(function, MSG_AUTO_HOME, lcd_auto_home);
-    //MENU_ITEM(gcode, MSG_SET_ORIGIN, PSTR("G92 X0 Y0 Z0"));
+#endif
 #if !defined(NO_PREHEAT_PLA_MENUITEM)	
     MENU_ITEM(function, MSG_PREHEAT_PLA, lcd_preheat_pla);
 #endif
@@ -722,6 +787,9 @@ void lcd_sdcard_menu()
 {
 #ifdef SDSUPPORT
     uint16_t fileCnt = card.getnrfilenames();
+#if defined(TANTILLUS)
+	enquecommand_P(PSTR(MOVE_HOME_GCODE));
+#endif
     START_MENU();
     MENU_ITEM(back, MSG_MAIN, lcd_main_menu);
     card.getWorkDirName();

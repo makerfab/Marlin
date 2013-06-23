@@ -376,19 +376,33 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 	// that section has settings specific to my printer, and you most likely don't want those
 	//
 	
-	#define AUTO_FAN_MIN 160            // Minimum speed to keep the fan at (value 0 - 255) (comment out if not in use)
-	#define MIN_FAN_TEMP 50             // Temperature to turn the fan on at
-	#define MIN_FAN_TIME 45             // Time in seconds to keep the fan on after temperature drops below MIN_FAN_TEMP	
-	
-//	#define NO_PREHEAT_PLA_MENUITEM     // removes PLA pre-heat option from LCD menu
-	#define NO_PREHEAT_ABS_MENUITEM     // removes ABS pre-heat option from LCD menu
+	#define AUTO_FAN_MIN 160            	// Minimum speed to keep the fan at (value 0 - 255) (comment out if not in use)
+	#define MIN_FAN_TEMP 50             	// Temperature to turn the fan on at
+	#define MIN_FAN_TIME 45             	// Time in seconds to keep the fan on after temperature drops below MIN_FAN_TEMP
 
-	#define LCD_EASY_LOAD				// Add load/unload to LCD control panel ***caution*** Allows long extrusion distances
-	#define BOWDEN_LENGTH 650			// Sets max extrusion length ***caution*** Allows long extrusion distances	
+	#define MOVE_HOME_FEEDRATE 6000			// Feed rate for returning the carriage to x=0, y=0 (on sd card print finished, sd menu enter)
 	
-	#define LCD_PURGE_RETRACT			// Adds purge/retract menu items
-	#define LCD_PURGE_LENGTH 5			// How much filament to purge from menu (mm)
-	#define LCD_RETRACT_LENGTH 5		// How much filament to retract (mm)
+//	#define NO_PREHEAT_PLA_MENUITEM     	// removes PLA pre-heat option from LCD menu
+	#define NO_PREHEAT_ABS_MENUITEM     	// removes ABS pre-heat option from LCD menu
+
+	#define LCD_PREVENT_DANGEROUS_HOME 		// disables auto homing item in menu with cold hotend
+	#define LCD_MIN_HOME_TEMP	170			// minimum hotend temperature to allow homing
+	
+	#define LCD_EASY_LOAD					// Add load/unload to LCD control panel ***caution*** Allows long extrusion distances
+	#define BOWDEN_LENGTH 650				// Sets max extrusion length ***caution*** Allows long extrusion distances	
+	#define EASY_LOAD_FEEDRATE 900			// Feed rate for loading filament (mm/min)
+	#define EASY_UNLOAD_FEEDRATE 900		// Feed rate for unloading filament (mm/min)
+	
+	#define LCD_PURGE_RETRACT				// Adds purge/retract menu items
+	#define LCD_PURGE_LENGTH 5				// How much filament to purge from menu (mm)
+	#define LCD_RETRACT_LENGTH 5			// How much filament to retract (mm)
+	#define LCD_PURGE_FEEDRATE 900			// Purge feed rate (mm/min)
+	#define LCD_RETRACT_FEEDRATE 900		// Retract feed rate (mm/min)
+	
+	
+	#define LCD_MOVE_BED_DOWN				// Adds move bed down item to main menu
+	#define LCD_MOVE_BED_DOWN_DIST 10   	// How far to move bed down
+	#define LCD_MOVE_BED_DOWN_FEEDRATE 1000 // Feed rate for moving bed down (mm/min)
 	
 	
 #endif //TANTILLUS
@@ -413,9 +427,9 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 	#define PID_INTEGRAL_DRIVE_MAX 255
 	#define K1 0.95
 	#define PID_dT ((16.0 * 8.0)/(F_CPU / 64.0 / 256.0))
-    #define  DEFAULT_Kp 30.55
-    #define  DEFAULT_Ki 2.38
-    #define  DEFAULT_Kd 98.12
+    #define  DEFAULT_Kp 34.00
+    #define  DEFAULT_Ki 2.77
+    #define  DEFAULT_Kd 104.17
 	
 	#define ULTRA_LCD
 	#define SDSUPPORT

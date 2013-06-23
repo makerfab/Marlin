@@ -297,7 +297,9 @@ static void lcd_main_menu()
     }
 #endif
 #if defined(LCD_MOVE_BED_DOWN)
-	MENU_ITEM(function, MSG_MOVE_BED_DOWN, lcd_move_bed_down);
+	if (!(movesplanned() || IS_SD_PRINTING)) {
+		MENU_ITEM(function, MSG_MOVE_BED_DOWN, lcd_move_bed_down);
+	}
 #endif
     END_MENU();
 }

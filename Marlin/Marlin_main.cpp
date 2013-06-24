@@ -2267,7 +2267,7 @@ void auto_fan()
     {
       fanSpeed=0;  //... turn the fan off
 #if defined(ULTRA_LCD)
-	lcd_setstatus(WELCOME_MSG);
+	lcd_setstatuspgm(WELCOME_MSG "          ");
 #endif
     }
     else

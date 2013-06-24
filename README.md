@@ -1,3 +1,34 @@
+============================================
+This is not the official Tantillus firmware!
+============================================
+
+This firmware is for testing purposes. It has Tantillus specific features similar to the official Tantillus firmware, but it is based on a newer version of Marlin.
+
+You can find the official marlin-tantillus <a href="https://github.com/Intrinsically-Sublime/Marlin">here</a>.
+
+For information about the Tantillus portable 3d printer please visit <a href="http://www.tantillus.org">www.tantillus.org</a>.
+
+Features:
+
+*  Tantillus specific homing
+*  Fan cools hotend/carriage to safe temperature after print finished (AUTO_FAN)
+*  Uses relative E by default
+*  Return carriage to X0 Y0 when SD printing finishes or stopped
+*  Configurable easy load/purge/retract length and feedrate
+*  Auto light (turn light on during print using configurable LIGHT_PIN)
+*  Support for simple i2c LCD controller (see BASIC_LCD in config)
+*  Direct wired encoder (BASIC_ENCODER)
+
+LCD features:
+
+*  Z position, SD%, print time display for 16x2 display
+*  Easy load/unload filament
+*  Purge/retract from LCD
+*  Option to disable PLA/ABS preheat
+*  Optional move bed down top level menu item (useful after print finished)
+*  Optional disable cold extruder homing
+
+
 ==========================
 Marlin 3D Printer Firmware
 ==========================

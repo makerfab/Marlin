@@ -399,11 +399,12 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 	#define LCD_PURGE_FEEDRATE 900			// Purge feed rate (mm/min)
 	#define LCD_RETRACT_FEEDRATE 900		// Retract feed rate (mm/min)
 	
-	
 	#define LCD_MOVE_BED_DOWN				// Adds move bed down item to main menu
 	#define LCD_MOVE_BED_DOWN_DIST 10   	// How far to move bed down
 	#define LCD_MOVE_BED_DOWN_FEEDRATE 1000 // Feed rate for moving bed down (mm/min)
 	
+//	#define AUTO_LIGHT						// turn on light on LIGHT_PIN if extruder is heating or fan is on
+//	#define LIGHT_PIN            10			// WARNING: Super bright LEDs/LED strips require a MOSFET driver. Regular LEDs need a resistor.
 	
 #endif //TANTILLUS
 
@@ -435,6 +436,10 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 	#define SDSUPPORT
 	#define BASIC_LCD
 	#define BASIC_ENCODER
+	
+	#define AUTO_LIGHT
+	#define LIGHT_PIN            10
+	
 #endif //LAJOS
 
 // EEPROM

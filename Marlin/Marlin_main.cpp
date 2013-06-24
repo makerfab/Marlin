@@ -421,6 +421,10 @@ void setup()
 
   lcd_init();
   
+ #ifdef AUTO_LIGHT
+ 	SET_OUTPUT(LIGHT_PIN);
+ #endif
+  
   #if defined(CONTROLLERFAN_PIN) && CONTROLLERFAN_PIN > -1
     SET_OUTPUT(CONTROLLERFAN_PIN); //Set pin used for driver cooling fan
   #endif 
@@ -2259,9 +2263,12 @@ void auto_fan()
       lastTemp = millis(); //... set time to NOW so the fan will turn on
     }
     
-    if (((millis() - lastTemp) >= (MIN_FAN_TIME*1000UL) || lastTemp == 0) && !isHeatingHotend(active_extruder))
+    if (fanSpeed!=0 && ((millis() - lastTemp) >= (MIN_FAN_TIME*1000UL) || lastTemp == 0) && !isHeatingHotend(active_extruder))
     {
       fanSpeed=0;  //... turn the fan off
+#if defined(ULTRA_LCD)
+	lcd_setstatus(WELCOME_MSG);
+#endif
     }
     else
     {
@@ -2273,6 +2280,18 @@ void auto_fan()
   }
 }
 #endif
+
+
+#ifdef AUTO_LIGHT
+void auto_light() {
+#ifdef MIN_FAN_TEMP
+	digitalWrite(LIGHT_PIN, (isHeatingHotend(active_extruder) || degHotend(active_extruder)>MIN_FAN_TEMP || fanSpeed>0) ? HIGH : LOW);
+#else
+	digitalWrite(LIGHT_PIN, (isHeatingHotend(active_extruder) || fanSpeed>0) ? HIGH : LOW);
+#endif
+}
+#endif
+
 
 void manage_inactivity()
 {
@@ -2301,6 +2320,9 @@ void manage_inactivity()
   #endif
   #ifdef AUTO_FAN_MIN
     auto_fan(); //Check if fan should be turned on to keep thermal barrier cool
+  #endif
+  #ifdef AUTO_LIGHT
+	auto_light();
   #endif
   #ifdef EXTRUDER_RUNOUT_PREVENT
     if( (millis() - previous_millis_cmd) >  EXTRUDER_RUNOUT_SECONDS*1000 )

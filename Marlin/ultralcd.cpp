@@ -297,7 +297,7 @@ static void lcd_main_menu()
     }
 #endif
 #if defined(LCD_MOVE_BED_DOWN)
-	if (!(movesplanned() || IS_SD_PRINTING)) {
+	if (!(movesplanned()>3 || IS_SD_PRINTING)) {
 		MENU_ITEM(function, MSG_MOVE_BED_DOWN, lcd_move_bed_down);
 	}
 #endif
@@ -385,7 +385,7 @@ static void lcd_auto_home()
 	}
 #endif
 #ifdef TANTILLUS
-//		enquecommand_P(PSTR(MOVE_HOME_GCODE));
+	enquecommand_P(PSTR(MOVE_HOME_GCODE));
 #endif
 	enquecommand_P((PSTR("G28")));
 	lcd_return_to_status();

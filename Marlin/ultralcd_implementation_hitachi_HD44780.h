@@ -352,6 +352,10 @@ Possible status screens:
 16x2   |0123456789012345|
        |000/000 B000/000|
        |Status line.....|
+	   
+16x2   |0123456789012345|
+       |000/000 B000/000|
+       |Status line.....|
 
 16x4   |0123456789012345|
        |000/000 B000/000|
@@ -379,6 +383,48 @@ static void lcd_implementation_status_screen()
 {
     int tHotend=int(degHotend(0) + 0.5);
     int tTarget=int(degTargetHotend(0) + 0.5);
+	
+#if defined(TANTILLUS) && LCD_WIDTH==16 && LCD_HEIGHT==2
+    lcd.setCursor(0, 0);
+	lcd.print(LCD_STR_THERMOMETER[0]);
+    lcd.print(itostr3(tHotend));
+	//lcd_printPGM(PSTR(LCD_STR_DEGREE));
+    lcd.print('/');
+    lcd.print(itostr3left(tTarget));
+	lcd_printPGM(PSTR(LCD_STR_DEGREE));
+		
+		
+	lcd.setCursor(LCD_WIDTH-6, 0);
+    lcd.print('Z');
+    lcd.print(ftostr32(current_position[Z_AXIS]));
+	
+	bool status_printed = false;
+#ifdef SDSUPPORT
+    if (IS_SD_PRINTING) {
+		lcd.setCursor(0, 1);
+		lcd_printPGM(PSTR("SD"));
+        lcd.print(itostr3(card.percentDone()));
+		lcd.print('%');
+		
+		lcd.setCursor(LCD_WIDTH - 6, 1);
+		lcd.print(LCD_STR_CLOCK[0]);
+		if(starttime != 0) {
+			uint16_t time = millis()/60000 - starttime/60000;
+			lcd.print(itostr2(time/60));
+			lcd.print(':');
+			lcd.print(itostr2(time%60));
+		} else {
+			lcd_printPGM(PSTR("--:--"));
+		}	
+		status_printed = true;
+	}
+#  endif//SDSUPPORT
+	if (!status_printed) {
+		lcd.setCursor(0, LCD_HEIGHT-1);
+		lcd.print(lcd_status_message);
+	}
+
+#else  // not 16x2 on TANTILLUS		
 
 #if LCD_WIDTH < 20
     lcd.setCursor(0, 0);
@@ -505,6 +551,8 @@ static void lcd_implementation_status_screen()
     //Status message line on the last line
     lcd.setCursor(0, LCD_HEIGHT - 1);
     lcd.print(lcd_status_message);
+
+#endif  // 16x2 on TANTILLUS		
 }
 static void lcd_implementation_drawmenu_generic(uint8_t row, const char* pstr, char pre_char, char post_char)
 {

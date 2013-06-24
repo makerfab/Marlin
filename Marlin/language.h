@@ -59,7 +59,7 @@
 	#define MSG_AUTO_HOME_DISABLED "Home Disabled"
 #endif
 
-	#define WELCOME_MSG MACHINE_NAME " Ready."
+	#define WELCOME_MSG MACHINE_NAME
 	#define MSG_SD_INSERTED "Card inserted"
 	#define MSG_SD_REMOVED "Card removed"
 	#define MSG_MAIN "Main"

@@ -44,10 +44,6 @@
 #define STRINGIFY_(n) #n
 #define STRINGIFY(n) STRINGIFY_(n)
 
-#if LANGUAGE_CHOICE == 1
-
-// LCD Menu Messages
-
 #if defined(TANTILLUS)
 	#define MSG_PURGE_XMM "Purge " STRINGIFY(LCD_PURGE_LENGTH) "mm"
 	#define MSG_RETRACT_XMM "Retract " STRINGIFY(LCD_RETRACT_LENGTH) "mm"
@@ -58,6 +54,10 @@
 	#define MSG_MOVE_BED_DOWN "Lower bed " STRINGIFY(LCD_MOVE_BED_DOWN_DIST) "mm"
 	#define MSG_AUTO_HOME_DISABLED "Home Disabled"
 #endif
+
+#if LANGUAGE_CHOICE == 1
+
+// LCD Menu Messages
 
 	#define WELCOME_MSG MACHINE_NAME
 	#define MSG_SD_INSERTED "Card inserted"

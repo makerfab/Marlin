@@ -234,6 +234,7 @@ unsigned long stoptime=0;
 static uint8_t tmp_extruder;
 
 #ifdef TANTILLUS
+bool allow_cold_extrude_once = false;		// for load/unload
 bool allow_lengthy_extrude_once = false;		// for load/unload
 #endif
 

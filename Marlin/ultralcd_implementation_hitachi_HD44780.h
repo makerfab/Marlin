@@ -352,10 +352,6 @@ Possible status screens:
 16x2   |0123456789012345|
        |000/000 B000/000|
        |Status line.....|
-	   
-16x2   |0123456789012345|
-       |000/000 B000/000|
-       |Status line.....|
 
 16x4   |0123456789012345|
        |000/000 B000/000|
@@ -386,17 +382,31 @@ static void lcd_implementation_status_screen()
 	
 #if defined(TANTILLUS) && LCD_WIDTH==16 && LCD_HEIGHT==2
     lcd.setCursor(0, 0);
+#if TEMP_SENSOR_BED == 0		// print extruder temp and z position
 	lcd.print(LCD_STR_THERMOMETER[0]);
     lcd.print(itostr3(tHotend));
-	//lcd_printPGM(PSTR(LCD_STR_DEGREE));
     lcd.print('/');
     lcd.print(itostr3left(tTarget));
 	lcd_printPGM(PSTR(LCD_STR_DEGREE));
 		
-		
 	lcd.setCursor(LCD_WIDTH-6, 0);
     lcd.print('Z');
     lcd.print(ftostr32(current_position[Z_AXIS]));
+#else 							// print extruder temp and bed temp
+	lcd.print(LCD_STR_THERMOMETER[0]);
+    lcd.print(itostr3(tHotend));
+    lcd.print('/');
+    lcd.print(itostr3left(tTarget));
+
+    lcd.setCursor(9, 0);
+    tHotend=int(degBed() + 0.5);
+    tTarget=int(degTargetBed() + 0.5);
+//    lcd.print(LCD_STR_BEDTEMP[0]);
+    lcd.print(itostr3(tHotend));
+    lcd.print('/');
+    lcd.print(itostr3left(tTarget));
+	
+#endif
 	
 	bool status_printed = false;
 #ifdef SDSUPPORT

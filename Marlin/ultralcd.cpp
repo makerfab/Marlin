@@ -402,6 +402,7 @@ static void lcd_easy_load()
 	{
 		enquecommand_P((PSTR("M83")));
 	}
+	allow_cold_extrude_once = true;
 	allow_lengthy_extrude_once = true;
 	enquecommand_P((PSTR(EASY_LOAD_GCODE)));
 	if (!extruder_relative_save)
@@ -418,6 +419,7 @@ static void lcd_easy_unload()
 	{
 		enquecommand_P((PSTR("M83")));
 	}
+	allow_cold_extrude_once = true;
 	allow_lengthy_extrude_once = true;
 	enquecommand_P((PSTR(EASY_UNLOAD_GCODE)));
 	if (!extruder_relative_save)

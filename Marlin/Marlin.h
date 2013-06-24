@@ -213,6 +213,7 @@ extern unsigned long stoptime;
 extern uint8_t active_extruder;
 
 #ifdef TANTILLUS
+extern bool allow_cold_extrude_once;		// for load/unload
 extern bool allow_lengthy_extrude_once;		// for load/unload
 #endif
 

@@ -541,10 +541,18 @@ void plan_buffer_line(const float &x, const float &y, const float &z, const floa
   {
     if(degHotend(active_extruder)<extrude_min_temp)
     {
-      position[E_AXIS]=target[E_AXIS]; //behave as if the move really took place, but ignore E part
-      SERIAL_ECHO_START;
-      SERIAL_ECHOLNPGM(MSG_ERR_COLD_EXTRUDE_STOP);
-    }
+#ifdef TANTILLUS
+	  if (!allow_cold_extrude_once) {
+#endif	
+        position[E_AXIS]=target[E_AXIS]; //behave as if the move really took place, but ignore E part
+        SERIAL_ECHO_START;
+        SERIAL_ECHOLNPGM(MSG_ERR_COLD_EXTRUDE_STOP);
+#ifdef TANTILLUS
+	  } else {
+		allow_cold_extrude_once = false;
+#endif
+	  }
+	}
     
     #ifdef PREVENT_LENGTHY_EXTRUDE
     if(labs(target[E_AXIS]-position[E_AXIS])>axis_steps_per_unit[E_AXIS]*EXTRUDE_MAXLENGTH)
@@ -558,8 +566,8 @@ void plan_buffer_line(const float &x, const float &y, const float &z, const floa
 #ifdef TANTILLUS
 	  } else {
 		allow_lengthy_extrude_once = false;
-	  }
 #endif
+	  }
     }
     #endif
   }

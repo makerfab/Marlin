@@ -378,7 +378,7 @@ static void lcd_retract()
 
 static void lcd_auto_home()
 {
-#if defined(LCD_PREVENT_DANGEROUS_HOME)
+#if defined(LCD_PREVENT_COLD_HOME)
 	if (degHotend(active_extruder) < LCD_MIN_HOME_TEMP) {
 		lcd_return_to_status();
 		return;
@@ -402,11 +402,13 @@ static void lcd_easy_load()
 	{
 		enquecommand_P((PSTR("M83")));
 	}
+	allow_lengthy_extrude_once = true;
 	enquecommand_P((PSTR(EASY_LOAD_GCODE)));
 	if (!extruder_relative_save)
 	{
 		enquecommand_P((PSTR("M82")));
 	}
+    lcd_return_to_status();
 }
 
 static void lcd_easy_unload()
@@ -416,11 +418,13 @@ static void lcd_easy_unload()
 	{
 		enquecommand_P((PSTR("M83")));
 	}
+	allow_lengthy_extrude_once = true;
 	enquecommand_P((PSTR(EASY_UNLOAD_GCODE)));
 	if (!extruder_relative_save)
 	{
 		enquecommand_P((PSTR("M82")));
 	}
+    lcd_return_to_status();
 }
 
 static void lcd_easy_load_menu()
@@ -471,7 +475,7 @@ static void lcd_prepare_menu()
     //MENU_ITEM(function, MSG_AUTOSTART, lcd_autostart_sd);
 #endif
     MENU_ITEM(gcode, MSG_DISABLE_STEPPERS, PSTR("M84"));
-#if defined(LCD_PREVENT_DANGEROUS_HOME)
+#if defined(LCD_PREVENT_COLD_HOME)
 	if (degHotend(active_extruder) < LCD_MIN_HOME_TEMP) {
 		MENU_ITEM(function, MSG_AUTO_HOME_DISABLED, lcd_auto_home);
 	} else {
@@ -1108,17 +1112,27 @@ void lcd_update()
     }
 }
 
+
+void lcd_clearstatus() {
+	char *si = lcd_status_message;
+	for (char i = 0; i<LCD_WIDTH; i++) {
+		*(si++) = ' ';
+	}
+}
+
 void lcd_setstatus(const char* message)
 {
     if (lcd_status_message_level > 0)
         return;
-    strncpy(lcd_status_message, message, LCD_WIDTH);
+	lcd_clearstatus();
+	strncpy(lcd_status_message, message, LCD_WIDTH);
     lcdDrawUpdate = 2;
 }
 void lcd_setstatuspgm(const char* message)
 {
     if (lcd_status_message_level > 0)
         return;
+	lcd_clearstatus();
     strncpy_P(lcd_status_message, message, LCD_WIDTH);
     lcdDrawUpdate = 2;
 }

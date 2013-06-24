@@ -233,6 +233,9 @@ unsigned long stoptime=0;
 
 static uint8_t tmp_extruder;
 
+#ifdef TANTILLUS
+bool allow_lengthy_extrude_once = false;		// for load/unload
+#endif
 
 bool Stopped=false;
 
@@ -2267,7 +2270,7 @@ void auto_fan()
     {
       fanSpeed=0;  //... turn the fan off
 #if defined(ULTRA_LCD)
-	lcd_setstatuspgm(WELCOME_MSG "          ");
+	lcd_setstatuspgm(PSTR(WELCOME_MSG)); // "          "));
 #endif
     }
     else

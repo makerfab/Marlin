@@ -49,6 +49,10 @@ static void lcd_control_temperature_preheat_abs_settings_menu();
 static void lcd_control_motion_menu();
 static void lcd_control_retract_menu();
 static void lcd_sdcard_menu();
+#if defined(TANTILLUS)
+static void lcd_calibrate_menu();
+static void lcd_calibrate_extruder_menu();
+#endif
 
 static void lcd_quick_feedback();//Cause an LCD refresh, and give the user visual or audiable feedback that something has happend
 
@@ -75,6 +79,7 @@ static void menu_action_setting_edit_callback_float5(const char* pstr, float* pt
 static void menu_action_setting_edit_callback_float51(const char* pstr, float* ptr, float minValue, float maxValue, menuFunc_t callbackFunc);
 static void menu_action_setting_edit_callback_float52(const char* pstr, float* ptr, float minValue, float maxValue, menuFunc_t callbackFunc);
 static void menu_action_setting_edit_callback_long5(const char* pstr, unsigned long* ptr, unsigned long minValue, unsigned long maxValue, menuFunc_t callbackFunc);
+
 
 #define ENCODER_FEEDRATE_DEADZONE 10
 
@@ -273,6 +278,10 @@ static void lcd_main_menu()
         MENU_ITEM(submenu, MSG_PREPARE, lcd_prepare_menu);
     }
     MENU_ITEM(submenu, MSG_CONTROL, lcd_control_menu);
+    if (!(movesplanned() || IS_SD_PRINTING))
+    {
+		MENU_ITEM(submenu, MSG_CALIBRATE, lcd_calibrate_menu);
+	}
 #ifdef SDSUPPORT
     if (card.cardOK)
     {
@@ -344,35 +353,65 @@ static void lcd_cooldown()
     lcd_return_to_status();
 }
 
+#if defined(TANTILLUS)
+static void lcd_calibrate_menu() {
+	START_MENU();	
+	MENU_ITEM(back, MSG_MAIN, lcd_main_menu);
+	MENU_ITEM(submenu, MSG_CALIBRATE_EXTRUDER, lcd_calibrate_extruder_menu);
+	END_MENU();
+}
+
+static void lcd_extrude(float length, float feedrate) {
+	current_position[E_AXIS] += length;
+	plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS], feedrate, active_extruder);
+}
+
+static void lcd_load_halfway() {
+	allow_cold_extrude_once = true;
+	allow_lengthy_extrude_once = true;
+	lcd_extrude(BOWDEN_LENGTH/2, EASY_LOAD_FEEDRATE/60);
+}
+
+static void lcd_unload_halfway() {
+	allow_lengthy_extrude_once = true;
+	lcd_extrude(-BOWDEN_LENGTH/2, EASY_UNLOAD_FEEDRATE/60);
+}
+
+static void lcd_calibrate_extrude_100mm() {
+    current_position[E_AXIS] = 0;
+    plan_set_e_position(current_position[E_AXIS]);
+	allow_cold_extrude_once = true;
+	lcd_extrude(100, LCD_EXT_CAL_FEEDRATE/60);
+}
+
+static void lcd_calibrate_retract_100mm() {
+    current_position[E_AXIS] = 0;
+    plan_set_e_position(current_position[E_AXIS]);
+	allow_cold_extrude_once = true;
+	lcd_extrude(-100, LCD_EXT_CAL_FEEDRATE/60);
+}
+
+static void lcd_calibrate_extruder_menu() {
+	START_MENU();
+	MENU_ITEM(back, MSG_CALIBRATE, lcd_calibrate_menu);
+	MENU_ITEM_EDIT(float51, MSG_ESTEPS, &axis_steps_per_unit[E_AXIS], 5, 9999);  
+	MENU_ITEM(function, MSG_E_100MM, lcd_calibrate_extrude_100mm);
+	MENU_ITEM(function, MSG_R_100MM, lcd_calibrate_retract_100mm);
+	MENU_ITEM(function, MSG_E_HALF_BOWDEN_LENGTH, lcd_load_halfway);
+	MENU_ITEM(function, MSG_R_HALF_BOWDEN_LENGTH, lcd_unload_halfway);
+	END_MENU();
+}
+#endif
+
 #if defined(LCD_PURGE_RETRACT)
-#define LCD_PURGE_GCODE "G1 F" STRINGIFY(LCD_PURGE_FEEDRATE) " E" STRINGIFY(LCD_PURGE_LENGTH)
-#define LCD_RETRACT_GCODE "G1 F" STRINGIFY(LCD_RETRACT_FEEDRATE) " E-" STRINGIFY(LCD_RETRACT_LENGTH)
 static void lcd_purge()
 {
-	bool extruder_relative_save = axis_relative_modes[3]; 
-	if (!extruder_relative_save)
-	{
-		enquecommand_P((PSTR("M83")));
-	}
-	enquecommand_P((PSTR(LCD_PURGE_GCODE)));
-	if (!extruder_relative_save)
-	{
-		enquecommand_P((PSTR("M82")));
-	}
+	lcd_extrude(LCD_PURGE_LENGTH, LCD_PURGE_FEEDRATE/60);
 }
 
 static void lcd_retract()
 {
-	bool extruder_relative_save = axis_relative_modes[3]; 
-	if (!extruder_relative_save)
-	{
-		enquecommand_P((PSTR("M83")));
-	}
-	enquecommand_P((PSTR(LCD_RETRACT_GCODE)));
-	if (!extruder_relative_save)
-	{
-		enquecommand_P((PSTR("M82")));
-	}
+	lcd_extrude(-LCD_RETRACT_LENGTH, LCD_RETRACT_FEEDRATE/60);
 }
 #endif // LCD_PURGE_RETRACT
 
@@ -392,39 +431,26 @@ static void lcd_auto_home()
 }
 
 #if defined(LCD_EASY_LOAD)
-#define EASY_LOAD_GCODE "G1 F" STRINGIFY(EASY_LOAD_FEEDRATE) " E" STRINGIFY(BOWDEN_LENGTH)
-#define EASY_UNLOAD_GCODE "G1 F" STRINGIFY(EASY_UNLOAD_FEEDRATE) " E-" STRINGIFY(BOWDEN_LENGTH)
 
 static void lcd_easy_load()
 {
-	bool extruder_relative_save = axis_relative_modes[3]; 
-	if (!extruder_relative_save)
-	{
-		enquecommand_P((PSTR("M83")));
+	if (target_temperature[0]<EXTRUDE_MINTEMP) {  // preheat to PLA temp if heater is not on
+		setTargetHotend0(plaPreheatHotendTemp);
+		fanSpeed = plaPreheatFanSpeed;
+		setWatch(); 	
 	}
+
 	allow_cold_extrude_once = true;
 	allow_lengthy_extrude_once = true;
-	enquecommand_P((PSTR(EASY_LOAD_GCODE)));
-	if (!extruder_relative_save)
-	{
-		enquecommand_P((PSTR("M82")));
-	}
+	lcd_extrude(BOWDEN_LENGTH, EASY_LOAD_FEEDRATE/60);
+
     lcd_return_to_status();
 }
 
 static void lcd_easy_unload()
 {
-	bool extruder_relative_save = axis_relative_modes[3]; 
-	if (!extruder_relative_save)
-	{
-		enquecommand_P((PSTR("M83")));
-	}
 	allow_lengthy_extrude_once = true;
-	enquecommand_P((PSTR(EASY_UNLOAD_GCODE)));
-	if (!extruder_relative_save)
-	{
-		enquecommand_P((PSTR("M82")));
-	}
+	lcd_extrude(-BOWDEN_LENGTH, EASY_UNLOAD_FEEDRATE/60);
     lcd_return_to_status();
 }
 

@@ -53,6 +53,12 @@
 	#define MSG_R_BOWDEN_LENGTH "Retract " STRINGIFY(BOWDEN_LENGTH) "mm"
 	#define MSG_MOVE_BED_DOWN "Lower bed " STRINGIFY(LCD_MOVE_BED_DOWN_DIST) "mm"
 	#define MSG_AUTO_HOME_DISABLED "Home Disabled"
+	#define MSG_CALIBRATE "Calibrate"
+	#define MSG_CALIBRATE_EXTRUDER "Extruder"
+	#define MSG_E_HALF_BOWDEN_LENGTH "Load Halfway"
+	#define MSG_R_HALF_BOWDEN_LENGTH "Unload Halfway"
+	#define MSG_E_100MM "Extrude 100mm"
+	#define MSG_R_100MM "Retract 100mm"
 #endif
 
 #if LANGUAGE_CHOICE == 1

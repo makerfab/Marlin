@@ -548,10 +548,9 @@ void plan_buffer_line(const float &x, const float &y, const float &z, const floa
         SERIAL_ECHO_START;
         SERIAL_ECHOLNPGM(MSG_ERR_COLD_EXTRUDE_STOP);
 #ifdef TANTILLUS
-	  } else {
-		allow_cold_extrude_once = false;
-#endif
 	  }
+	  allow_cold_extrude_once = false;
+#endif
 	}
     
     #ifdef PREVENT_LENGTHY_EXTRUDE
@@ -564,14 +563,13 @@ void plan_buffer_line(const float &x, const float &y, const float &z, const floa
         SERIAL_ECHO_START;
         SERIAL_ECHOLNPGM(MSG_ERR_LONG_EXTRUDE_STOP);
 #ifdef TANTILLUS
-	  } else {
-		allow_lengthy_extrude_once = false;
-#endif
 	  }
+	  allow_lengthy_extrude_once = false;
+#endif
     }
-    #endif
+    #endif  // PREVENT_LENGTHY_EXTRUDE
   }
-  #endif
+  #endif  // PREVENT_DANGEROUS_EXTRUDE
 
   // Prepare to set up new block
   block_t *block = &block_buffer[block_buffer_head];

@@ -394,6 +394,8 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 	#define LCD_PURGE_FEEDRATE 900			// Purge feed rate (mm/min)
 	#define LCD_RETRACT_FEEDRATE 900		// Retract feed rate (mm/min)
 	
+	#define LCD_EXT_CAL_FEEDRATE 400		// Feed rate for extruder calibration (mm/min)
+	
 	#define LCD_MOVE_BED_DOWN				// Adds move bed down item to main menu
 	#define LCD_MOVE_BED_DOWN_DIST 10   	// How far to move bed down
 	#define LCD_MOVE_BED_DOWN_FEEDRATE 1000 // Feed rate for moving bed down (mm/min)
@@ -408,7 +410,7 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 #ifdef LAJOS
 	#define Z_MAX_POS 120			// cable Z, without getting too close to my electronics
 	
-	#define DEFAULT_AXIS_STEPS_PER_UNIT   {247,247,205,455}				// 1/32 microstep for x,y,z, and probably a bit thicker fishing line
+	#define DEFAULT_AXIS_STEPS_PER_UNIT   {247,247,205,505}				// 1/32 microstep for x,y,z, and probably a bit thicker fishing line
 	#define DEFAULT_MAX_FEEDRATE          {150, 150, 150, 40}
 	#define DEFAULT_MAX_ACCELERATION      {8000,8000,4000,10000}
 
@@ -417,6 +419,11 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 	#define DEFAULT_ZJERK                 10.0
 
 	#define INVERT_E0_DIR true            // my extruder goes backwards
+	
+	#define LCD_PURGE_LENGTH 3				
+	#define LCD_RETRACT_LENGTH 3			
+	#define LCD_PURGE_FEEDRATE 500		
+	#define LCD_RETRACT_FEEDRATE 500		
 	
 	#define PIDTEMP
 	#define PID_FUNCTIONAL_RANGE 10

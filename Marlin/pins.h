@@ -297,7 +297,7 @@
 #define FAN_PIN            4 // IO pin. Buffer needed
 #endif
 #define PS_ON_PIN          12
-#define KILL_PIN           -1
+#define KILL_PIN           41 //[RAMPS14-SMART-ADAPTER]
 
 #define HEATER_0_PIN       10   // EXTRUDER 1
 #if MOTHERBOARD == 33
@@ -328,25 +328,26 @@
 
   #ifdef NEWPANEL
   //arduino pin which triggers an piezzo beeper
-    #define BEEPER 33			// Beeper on AUX-4
+    #define BEEPER 37 //[RAMPS14-SMART-ADAPTER] / 37 = enabled; -1 = dissabled / (if you don't like the beep sound ;-)
+	
 
-    #define LCD_PINS_RS 57
-    #define LCD_PINS_ENABLE 58
-    #define LCD_PINS_D4 59
-    #define LCD_PINS_D5 64 
-    #define LCD_PINS_D6 44
-    #define LCD_PINS_D7 66
+    #define LCD_PINS_RS 16 
+    #define LCD_PINS_ENABLE 17
+    #define LCD_PINS_D4 23
+    #define LCD_PINS_D5 25 
+    #define LCD_PINS_D6 27
+    #define LCD_PINS_D7 29
     
     //buttons are directly attached using AUX-2
-    #define BTN_EN1 40
-    #define BTN_EN2 42
-    #define BTN_ENC 63  //the click
+    #define BTN_EN1 31
+    #define BTN_EN2 33
+    #define BTN_ENC 35  //the click
     
     #define BLEN_C 2
     #define BLEN_B 1
     #define BLEN_A 0
     
-    #define SDCARDDETECT -1		// Ramps does not use this port
+    #define SDCARDDETECT 49 //[RAMPS14-SMART-ADAPTER] 
     
       //encoder rotation values
     #define encrot0 0

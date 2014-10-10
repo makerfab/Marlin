@@ -215,8 +215,8 @@ const bool Z_ENDSTOPS_INVERTING = false; // set to true to invert the logic of t
   #define NEWPANEL
   #define SDSUPPORT
   #define ULTRA_LCD
-  #define LCD_WIDTH 16
-  #define LCD_HEIGHT 2
+  #define LCD_WIDTH 20
+  #define LCD_HEIGHT 4
 
   #define EASY_LOAD             // Add load/unload to LCD control panel ***caution*** Allows long extrusion distances
   #define BOWDEN_LENGTH 650     // Sets max extrusion length ***caution*** Allows long extrusion distances

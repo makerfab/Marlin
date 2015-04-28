@@ -14,7 +14,7 @@
 
 // LCD Menu Messages
 
-	#define WELCOME_MSG "Tantillus"
+	#define WELCOME_MSG "Tantillus A2"
 	#define MSG_E650 " Extrude 650mm's"
 	#define MSG_R650 " Retract 650mm's"
 	#define MSG_LOAD " Load Filament"
